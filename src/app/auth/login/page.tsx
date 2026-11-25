@@ -1,12 +1,105 @@
+'use client';
+
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { Eye, EyeOff, User, Mail, Key } from "lucide-react";
+
 export default function LoginPage() {
+    const [showPassword, setShowPassword] = useState(false);
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+    });
+
+    const router = useRouter();
+
+    const handleInputchange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target
+        setFormData({...formData, [name]: value})
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        console.log("Login submitted:", formData);
+        router.push("/");
+    };
+
+    const isFormValid = formData.email && formData.password
+
     return (
-            <div>
-                <h1>
-                    Ini login page
-                </h1>
-                <h2>
-                    Ini subheading
-                </h2>
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 flex items-center justify-center p-4">
+            <div className="w-full max-w-md">
+                <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-blue-100 p-8 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-600/10 rounded-3xl" />
+                    <div className="relative z-10">
+                        <div className="text-center mb-6">
+                            <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-500/5 to-blue-600/100 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                                <User className="w-8 h-8 text-white" />
+                            </div>
+                            <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h1>
+                            <p className="text-gray-600">Sign in to continue.</p>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-gray-700" htmlFor="email">Email</label>
+                                <div className="relative">
+                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleInputchange}
+                                        placeholder="Your Email Address"
+                                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl bg-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-gray-700" htmlFor="password">Password</label>
+                                <div className="relative">
+                                    <Key className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        id="password"
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleInputchange}
+                                        placeholder="Your Password"
+                                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl bg-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    >
+                                        {showPassword ? <EyeOff className="w-5 h-5"/> : <Eye className="w-5 h-5"/>}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={!isFormValid}
+                                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 transform hover:scale-[1.02] shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all"
+                            >
+                                Login
+                            </button>
+                            <div className="text-center">
+                                <p className="text-sm text-gray-600">
+                                    Don't have an account ?
+                                    <a href="/auth/register" className="text-blue-600 hover:underline"> Register</a>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
+        </div>
     );
 }
